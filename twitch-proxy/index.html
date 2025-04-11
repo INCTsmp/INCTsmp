@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Stream Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://steady-empanada-7c30b7.netlify.app https://api.allorigins.win;">
+  <style>
+    body {
+      font-family: Mojangles;
+      max-width: 600px;
+      margin: 2rem auto;
+      background-image: url('images/minecraftwallpaper.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: black;
+    }
+
+    .streamer {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .live {
+      background-color: green;
+    }
+
+    .offline {
+      background-color: red;
+    }
+
+    a {
+      text-decoration: none;
+      color: black !important;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Twitch Stream Tracker</h1>
+  
+  <div id="streamer-list">
+    <!-- Streamer statuses will appear here -->
+  </div>
+
+  <script>
+    const streamers = ['alwaysalmostnever', 'jawnskibop', 'radi0zombie']; // Replace with Twitch usernames
+
+    async function getStreamerStatus(streamer) {
+      console.log(`Fetching status for streamer: ${streamer}`);
+      try {
+        // Fetch data from the Netlify function
+        const response = await fetch(`/.netlify/functions/get-status`);
+        console.log(`Response status: ${response.status}`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(`Data for ${streamer}:`, data);
+
+        return data.find((stream) => stream.user_name === streamer) || { status: 'Unknown' };
+      } catch (error) {
+        console.error(`Error loading streamer status for ${streamer}:`, error);
+        return { status: 'Error', message: error.message };
+      }
+    }
+
+    async function updateStreamerList() {
+      console.log("Updating streamer list...");
+      const container = document.getElementById('streamer-list');
+      container.innerHTML = ''; // Clear previous content
+
+      for (const streamer of streamers) {
+        const statusData = await getStreamerStatus(streamer);
+        const status = statusData.status || 'Offline';
+
+        const isLive = status.toLowerCase() === 'live';
+
+        const streamerDiv = document.createElement('div');
+        streamerDiv.className = 'streamer';
+
+        const dot = document.createElement('span');
+        dot.className = 'status-dot ' + (isLive ? 'live' : 'offline');
+
+        const link = document.createElement('a');
+        link.href = `https://twitch.tv/${streamer}`;
+        link.target = '_blank';
+        link.textContent = streamer;
+
+        streamerDiv.appendChild(dot);
+        streamerDiv.appendChild(link);
+        container.appendChild(streamerDiv);
+      }
+    }
+
+    // Initialize the streamer list
+    updateStreamerList();
+    setInterval(updateStreamerList, 60000); // Refresh every 60 seconds
+  </script>
+</body>
+</html>

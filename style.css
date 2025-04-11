@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'Mojangles';
+  src: url('Fonts/mojangles.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: "Mojangles", sans-serif;
+}
+
+.header {
+	text-align: center;
+	color: #fff;
+}
+.styled-paragraph {
+  background-image: url('images/grassblock.jpg'); /* Replace with your image path */
+  background-repeat: repeat;
+  background-size: 100px 100px; /* Options: cover, contain, or specific size like 100px 100px */
+  padding: 20px; /* Add some padding to see the background */
+  color: white; /* Adjust text color for visibility */
+  width: fit-content;
+  font-size: 20px;
+}
+
+
+a:link {
+  color: white;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: white;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: white;
+  background-color: transparent;
+  text-decoration: underline;
+}
+a:active {
+  color: white;
+  background-color: transparent;
+  text-decoration: underline;
+}
