@@ -1,21 +1,30 @@
 const netlifyEndpoint = 'https://twitchtracker.netlify.app/.netlify/functions/get-status.js';
-const proxiedURL = `https://api.allorigins.win/get?url=${encodeURIComponent(netlifyEndpoint)}`;
 
 const trackedUsers = ['alwaysalmostnever', 'jawnskibop', 'radi0zombie'];
 
 async function checkStreamStatus() {
   try {
-    const response = await fetch(proxiedURL);
-    const wrapped = await response.json();
-    const streams = JSON.parse(wrapped.contents);
+    // Fetch the stream data directly from the Netlify endpoint
+    const response = await fetch(netlifyEndpoint);
 
+    // Check if the response is successful
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Parse the response as JSON
+    const streams = await response.json();
+
+    // Set up the status display area
     const statusDiv = document.getElementById('stream-status');
 
+    // Map of user logins to their stream data
     const liveMap = {};
     streams.forEach(stream => {
       liveMap[stream.user_login.toLowerCase()] = stream;
     });
 
+    // Prepare the HTML to display live and offline users
     let html = '<ul>';
     trackedUsers.forEach(user => {
       const stream = liveMap[user.toLowerCase()];
@@ -26,11 +35,18 @@ async function checkStreamStatus() {
       }
     });
     html += '</ul>';
+
+    // Display the HTML content
     statusDiv.innerHTML = html;
+
   } catch (err) {
+    // Handle errors gracefully and show an error message in the UI
     console.error('Stream check failed:', err);
     document.getElementById('stream-status').textContent = 'Error loading stream info.';
   }
 }
 
+// Call the function to check stream status on page load
 checkStreamStatus();
+
+
