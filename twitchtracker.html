@@ -4,19 +4,33 @@
   <meta charset="UTF-8">
   <title>Live Stream Tracker</title>
   <link rel="stylesheet" href="style.css"/>
+
+  <!-- ✅ UPDATED CSP to allow inline styles & Netlify API calls -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    style-src 'self' 'unsafe-inline';
+    connect-src 'self' https://twitchtracker.netlify.app https://api.allorigins.win;
+    script-src 'self';">
+
+  <!-- Your inline styles (OK now) -->
   <style>
     body {
       font-family: Mojangles;
       max-width: 600px;
       margin: 2rem auto;
-	  background-image: url('images/minecraftwallpaper.jpg');
-	  background-repeat: no-repeat
+      background-image: url('images/minecraftwallpaper.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: black;
     }
 
     .streamer {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
     }
 
     .status-dot {
@@ -26,7 +40,7 @@
       margin-right: 10px;
     }
 
-    .online {
+    .live {
       background-color: green;
     }
 
@@ -36,51 +50,20 @@
 
     a {
       text-decoration: none;
-      color: #333;
+      color: black !important;
+      font-weight: bold;
     }
   </style>
 </head>
+
 <body>
 
-  <h1>Live Stream Tracker</h1>
+  <h1>Twitch Stream Tracker</h1>
 
-  
-  <div id="tracker">
-    <!-- Streamer statuses will be injected here -->
-  </div>
+  <div id="stream-status">Loading...</div>
 
-  <script>
-    const apiURL = 'steady-empanada-7c30b7.netlify.app'; // Replace with your real URL
-    const streamers = ['alwaysalmostnever', 'jawnskibop', 'radi0zombie']; // Make sure this matches your backend!
+  <script src="app.js"></script>
 
-    async function fetchLiveStatuses() {
-      const tracker = document.getElementById('tracker');
-      tracker.innerHTML = '';
-
-      try {
-        const response = await fetch(apiURL);
-        const liveData = await response.json();
-        const liveUsers = liveData.map(user => user.user_login.toLowerCase());
-
-        streamers.forEach(name => {
-          const isLive = liveUsers.includes(name.toLowerCase());
-          const dotClass = isLive ? 'online' : 'offline';
-          const streamerDiv = document.createElement('div');
-          streamerDiv.className = 'streamer';
-          streamerDiv.innerHTML = `
-            <span class="status-dot ${dotClass}"></span>
-            <a href="https://twitch.tv/${name}" target="_blank">${name}</a>
-          `;
-          tracker.appendChild(streamerDiv);
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        tracker.innerHTML = '<p>Could not load streamer status. Please try again later.</p>';
-      }
-    }
-
-    fetchLiveStatuses();
-    setInterval(fetchLiveStatuses, 60000); // Refresh every 60 seconds
-  </script>
 </body>
 </html>
+
