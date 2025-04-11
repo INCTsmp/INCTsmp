@@ -1,4 +1,4 @@
-const netlifyEndpoint = 'https://twitchtracker.netlify.app/netlify/functions/get-status.js';
+const netlifyEndpoint = 'https://twitchtracker.netlify.app/netlify/functions/get-status';
 
 const trackedUsers = ['alwaysalmostnever', 'jawnskibop', 'radi0zombie'];
 
