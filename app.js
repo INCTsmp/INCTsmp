@@ -1,6 +1,6 @@
 const netlifyEndpoint = 'https://twitchtracker.netlify.app/.netlify/functions/get-status';
 
-const trackedUsers = ['alwaysalmostnever', 'jawnskibop', 'radi0zombie'];
+const trackedUsers = ['alwaysalmostnever', 'jawnskibop', 'radi0zombie', 'blessedjackers', 'rainyytm_'];
 
 async function checkStreamStatus() {
   try {
